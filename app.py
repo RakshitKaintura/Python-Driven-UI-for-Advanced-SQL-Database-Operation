@@ -1,8 +1,9 @@
 import streamlit  as st
 import pandas as pd
-from db_function import(
+from db_functions import(
     connect_to_db,
-    get_basic_info
+    get_basic_info,
+    get_additonal_tables
 )
 
 #sidebar
@@ -25,10 +26,19 @@ if option=="Basic Information":
     keys=list(basic_info.keys())
 
     for i in range(3):
-        cols[i].metric(label=keys[i],values=basic_info[keys[i]])
+        cols[i].metric(label=keys[i],value=basic_info[keys[i]])
     
     cols= st.columns(3)
     for i in range(3,6):
         cols[i-3].metric(label=keys[i], value= basic_info[keys[i]])
     
     st.divider()
+
+
+    # Fetch and display detailed tables
+    tables=get_additonal_tables(cursor)
+    for labels,data in tables.items():
+        st.header(labels)
+        df=pd.DataFrame(data)
+        st.dataframe(df)
+        st.divider()
